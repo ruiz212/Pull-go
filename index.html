@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pull&Go Bag - Premium Experience</title>
+    <title>Pull&Go Bag - Premium Presentation</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,14 +17,26 @@
         }
 
         :root {
-            --bg-dark: #090a0c; /* Más profundo, casi negro puro para resaltar el glow */
+            --bg-dark: #090a0c;
             --text-primary: #f0f0f0;
             --text-secondary: #a0a0a0;
             --cta-green: #6b8e23;
-            --cta-green-hover: #8bc34a; /* Más vibrante al hover */
-            --glass-bg: rgba(255, 255, 255, 0.03);
+            --cta-green-hover: #8bc34a;
+            --glass-bg: rgba(255, 255, 255, 0.04);
             --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+        }
+
+        /* Ocultar barra de scroll para formato presentación */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
         }
 
         body {
@@ -33,11 +45,13 @@
             color: var(--text-primary);
             line-height: 1.4;
             overflow-x: hidden;
+            /* Suavizar scroll nativo cuando se usan las flechas */
+            scroll-behavior: smooth; 
         }
 
         h2 {
             font-weight: 800;
-            font-size: 2rem;
+            font-size: 2.2rem;
             line-height: 1.1;
             margin-bottom: 0.8rem;
             letter-spacing: -0.5px;
@@ -51,17 +65,17 @@
 
         p {
             color: var(--text-secondary);
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             font-weight: 300;
         }
 
         /* Utilities */
         .glass-card {
             background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
-            border-radius: 20px;
+            border-radius: 24px;
             box-shadow: var(--glass-shadow);
         }
 
@@ -69,34 +83,35 @@
             display: inline-block;
             background: linear-gradient(135deg, var(--cta-green) 0%, var(--cta-green-hover) 100%);
             color: #fff;
-            padding: 16px 24px;
+            padding: 18px 30px;
             border-radius: 50px;
             text-decoration: none;
             font-weight: 700;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             text-align: center;
             border: none;
             cursor: pointer;
             box-shadow: 0 8px 25px rgba(107, 142, 35, 0.4);
+            width: 100%;
         }
 
         .cta-button small {
             display: block;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 400;
-            margin-top: 4px;
-            opacity: 0.8;
+            margin-top: 6px;
+            opacity: 0.85;
         }
 
         .cta-button:hover {
-            transform: translateY(-4px) scale(1.02);
-            box-shadow: 0 12px 30px rgba(139, 195, 74, 0.6);
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 12px 35px rgba(139, 195, 74, 0.6);
         }
 
         /* Scrollytelling Layout */
         #scroll-wrapper {
-            height: 400vh;
+            height: 400vh; /* 4 "slides" de 100vh */
             position: relative;
         }
 
@@ -111,16 +126,31 @@
             overflow: hidden;
         }
 
+        /* Indicador de Presentación */
+        .presentation-hints {
+            position: absolute;
+            top: 2rem;
+            width: 100%;
+            text-align: center;
+            z-index: 50;
+            opacity: 0.5;
+            font-size: 0.9rem;
+            pointer-events: none;
+        }
+        .keyboard-hint {
+            display: none;
+        }
+
         /* SVG Canvas */
         #bag-svg {
-            width: 160%; /* Muy grande en móviles */
+            width: 160%; 
             max-width: 900px;
             height: auto;
-            max-height: 100vh;
+            max-height: 85vh; /* Evitar que se corte en laptops */
             z-index: 1;
         }
 
-        /* Animaciones CSS Flotantes para los Objetos (Incluyen la transformación base) */
+        /* Animaciones CSS Flotantes para los Objetos */
         @keyframes float1 {
             0%, 100% { transform: translate(580px, 200px) rotate(15deg) translateY(0); }
             50% { transform: translate(580px, 200px) rotate(15deg) translateY(-20px); }
@@ -147,13 +177,16 @@
         .floating-ui {
             position: absolute;
             width: 90%;
-            max-width: 380px;
-            padding: 2rem;
+            max-width: 420px;
+            padding: 2.5rem;
             text-align: center;
             z-index: 10;
             opacity: 0;
             top: 10%;
             pointer-events: none;
+            left: 0;
+            right: 0;
+            margin: 0 auto;
         }
 
         /* Engineering Cards Phase 4 */
@@ -166,68 +199,88 @@
 
         .eng-card {
             position: absolute;
-            padding: 1.2rem;
+            padding: 1.5rem;
             opacity: 0;
-            border-left: 3px solid var(--cta-green-hover);
+            border-left: 4px solid var(--cta-green-hover);
+            background: rgba(15, 16, 18, 0.4);
         }
 
-        #card-1 { top: 15%; left: 5%; width: 45%; }
-        #card-2 { top: 45%; right: 5%; width: 45%; border-left: none; border-right: 3px solid var(--cta-green-hover); text-align: right; }
-        #card-3 { bottom: 25%; left: 5%; width: 45%; }
+        #card-1 { top: 10%; left: 5%; width: 45%; }
+        #card-2 { top: 40%; right: 5%; width: 45%; border-left: none; border-right: 4px solid var(--cta-green-hover); text-align: right; }
+        #card-3 { bottom: 20%; left: 5%; width: 45%; }
 
         .eng-card h4 {
-            font-size: 1rem;
+            font-size: 1.1rem;
             color: #fff;
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.4rem;
         }
         .eng-card p {
-            font-size: 0.8rem;
-            color: #ccc;
+            font-size: 0.85rem;
+            color: #d0d0d0;
         }
 
-        /* Fixed CTA Bottom */
-        .fixed-bottom-cta {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            padding: 1.5rem 1rem 2rem;
+        /* Final CTA (Phase 4 only) */
+        .final-cta-container {
+            position: absolute;
+            bottom: 6%;
+            left: 0; right: 0; margin: 0 auto;
+            width: 90%;
+            max-width: 450px;
             z-index: 100;
-            border-radius: 30px 30px 0 0;
-            border-bottom: none;
-            display: flex;
-            justify-content: center;
-            background: linear-gradient(to top, rgba(15,16,18,0.95) 0%, rgba(15,16,18,0.6) 100%);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            visibility: hidden;
+            opacity: 0;
+            text-align: center;
         }
 
-        .primary-cta {
-            width: 100%;
-            max-width: 400px;
-        }
-
-        /* Desktop Adjustments */
+        /* Desktop & Presentation Adjustments */
         @media (min-width: 768px) {
             #bag-svg {
-                width: 100%;
+                width: 100vw;
+                height: 100vh;
+                max-width: 100%;
+                max-height: 100vh;
+                transform: scale(1.2); /* Inmersión total masiva */
             }
             
             .floating-ui {
                 top: auto;
-                bottom: 25%;
+                bottom: 15%;
+                max-width: 700px;
+                padding: 3.5rem;
             }
 
-            #card-1 { top: 20%; left: 15%; width: 280px; }
-            #card-2 { top: 50%; right: 15%; width: 280px; }
-            #card-3 { bottom: 30%; left: 20%; width: 280px; border-left: 3px solid var(--cta-green-hover); text-align: left; }
+            .floating-ui h2 { font-size: 3.5rem; }
+            .floating-ui p { font-size: 1.4rem; }
 
-            .eng-card h4 { font-size: 1.2rem; }
-            .eng-card p { font-size: 0.95rem; }
+            .keyboard-hint {
+                display: inline;
+            }
+
+            /* Esparcir las tarjetas por toda la pantalla panorámica */
+            #card-1 { top: 15%; left: 8%; width: 350px; padding: 2rem; }
+            #card-2 { top: 45%; right: 8%; width: 350px; padding: 2rem; border-left: none; border-right: 5px solid var(--cta-green-hover); text-align: right; }
+            #card-3 { bottom: 20%; left: 8%; width: 350px; padding: 2rem; border-left: 5px solid var(--cta-green-hover); text-align: left; }
+
+            .eng-card h4 { font-size: 1.5rem; margin-bottom: 0.6rem; }
+            .eng-card p { font-size: 1.1rem; }
+            
+            .final-cta-container {
+                max-width: 600px;
+                bottom: 8%;
+            }
+
+            .cta-button {
+                font-size: 1.6rem;
+                padding: 22px 45px;
+            }
         }
     </style>
 </head>
 <body>
+
+    <div class="presentation-hints">
+        Desliza hacia abajo <span class="keyboard-hint">o usa las flechas del teclado / Barra Espaciadora</span>
+    </div>
 
     <div id="scroll-wrapper">
         <div id="sticky-container">
@@ -279,28 +332,23 @@
                     </g>
                 </g>
 
-                <!-- El Bolso (Capa Superior para Envolver) -->
+                <!-- El Bolso -->
                 <g id="bag-group">
-                    <!-- Sombra del bolso -->
                     <ellipse cx="400" cy="680" rx="150" ry="20" fill="rgba(0,0,0,0.5)" filter="url(#glow)" id="bag-shadow"/>
                     
-                    <!-- Correas -->
                     <path id="strap-left" d="M 150 400 C 50 250, 150 150, 250 250" fill="none" stroke="url(#strapGrad)" stroke-width="14" stroke-linecap="round"/>
                     <path id="strap-right" d="M 650 400 C 750 250, 650 150, 550 250" fill="none" stroke="url(#strapGrad)" stroke-width="14" stroke-linecap="round"/>
 
-                    <!-- Base del Bolso -->
                     <path id="bag-body" d="M 400 100 C 565 100, 700 235, 700 400 C 700 565, 565 700, 400 700 C 235 700, 100 565, 100 400 C 100 235, 235 100, 400 100 Z" fill="url(#bagGrad)" stroke="#1a1a1a" stroke-width="6" filter="url(#glow)"/>
                     
-                    <!-- Costuras Interiores (Desaparecen al cerrar) -->
                     <circle id="inner-stitching" cx="400" cy="400" r="260" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2" stroke-dasharray="8,8"/>
                 </g>
             </svg>
 
             <!-- Textos e Interfaces Flotantes -->
-            
             <div class="floating-ui glass-card" id="text-phase-1">
                 <h2 class="gradient-text">De la universidad al trabajo.</h2>
-                <p>En un solo movimiento. <br><strong>Desliza para empacar ↓</strong></p>
+                <p>En un solo movimiento.</p>
             </div>
 
             <div class="floating-ui glass-card" id="text-phase-2">
@@ -327,15 +375,15 @@
                     <p>Sin cierres ni hebillas mecánicas</p>
                 </div>
             </div>
+            
+            <!-- Botón de compra que aparecerá solo en la Fase Final -->
+            <div class="final-cta-container">
+                <a href="https://wa.me/1234567890" target="_blank" class="cta-button">
+                    Lleva el tuyo con 5% OFF <small>Solo primeros 5 compradores en la Feria</small>
+                </a>
+            </div>
 
         </div>
-    </div>
-
-    <!-- CTA Fijo Inferior -->
-    <div class="fixed-bottom-cta glass-card">
-        <a href="https://wa.me/1234567890" target="_blank" class="cta-button primary-cta">
-            Lleva el tuyo con 5% OFF <small>Solo primeros 5 compradores en Managua</small>
-        </a>
     </div>
 
     <!-- GSAP & ScrollTrigger -->
@@ -347,69 +395,102 @@
             gsap.registerPlugin(ScrollTrigger);
 
             const closedBagPath = "M 400 250 C 450 250, 520 250, 550 300 C 550 450, 500 650, 400 650 C 300 650, 250 450, 250 300 C 280 250, 350 250, 400 250 Z";
-            
             const closedLeftStrap = "M 300 300 C 250 100, 350 50, 400 150";
             const closedRightStrap = "M 500 300 C 550 100, 450 50, 400 150";
 
-            // Set initial state of the bag (small and at the bottom, "waiting")
-            gsap.set("#bag-group", { scale: 0.1, y: 500, transformOrigin: "center center" });
+            // Estado Inicial Asegurado
+            gsap.set("#text-phase-1", { opacity: 1, y: 0 });
+            gsap.set("#text-phase-2", { opacity: 0, y: 20 });
+            gsap.set("#text-phase-3", { opacity: 0, y: 20 });
+            gsap.set(".eng-card", { opacity: 0, y: 20 });
+            gsap.set(".final-cta-container", { autoAlpha: 0, y: 30 });
+            
+            // El bolso inicia pequeño y abajo, DENTRO del viewBox
+            gsap.set("#bag-group", { scale: 0.1, y: 250, transformOrigin: "center center" });
 
+            // Creación del Timeline con Snap para modo Presentación
             const tl = gsap.timeline({
                 scrollTrigger: {
                     trigger: "#scroll-wrapper",
                     start: "top top",
                     end: "bottom bottom",
-                    scrub: 1
+                    scrub: 1,
+                    // Snap perfecto a las 4 fases (0%, 33.3%, 66.6%, 100%)
+                    snap: {
+                        snapTo: [0, 0.3333, 0.6666, 1],
+                        duration: {min: 0.4, max: 0.8},
+                        ease: "power2.inOut",
+                        delay: 0.1
+                    }
                 }
             });
 
+            // LA LÓGICA DE TIEMPO (Total 30s)
+
             // ==========================================
-            // FASE 1 (0% - 25%): Intro
+            // TRANSICIÓN FASE 1 -> FASE 2 (0s - 10s)
             // ==========================================
+            tl.to("#text-phase-1", { opacity: 0, y: -20, duration: 2 }, 1);
+            // El bolso se expande masivamente
+            tl.to("#bag-group", { scale: 1.1, y: -20, duration: 6, ease: "power2.inOut" }, 2);
+            // El texto 2 aparece justo para estar 100% visible en el segundo 10
+            tl.to("#text-phase-2", { opacity: 1, y: 0, duration: 2 }, 8);
+
+            // ==========================================
+            // TRANSICIÓN FASE 2 -> FASE 3 (10s - 20s)
+            // ==========================================
+            tl.to("#text-phase-2", { opacity: 0, y: -20, duration: 2 }, 11);
+            // Morphing y Cierre
+            tl.to("#bag-body", { attr: { d: closedBagPath }, duration: 6, ease: "power2.inOut" }, 12);
+            tl.to("#strap-left", { attr: { d: closedLeftStrap }, duration: 6, ease: "power2.inOut" }, 12);
+            tl.to("#strap-right", { attr: { d: closedRightStrap }, duration: 6, ease: "power2.inOut" }, 12);
+            tl.to("#inner-stitching", { opacity: 0, duration: 2 }, 12);
+            tl.to("#items-group", { opacity: 0, scale: 0.5, transformOrigin: "center center", duration: 4 }, 12);
+            // El bolso se compacta
+            tl.to("#bag-group", { scale: 0.8, y: 50, duration: 6, ease: "power2.inOut" }, 12);
+            // El texto 3 aparece para estar listo en el segundo 20
+            tl.to("#text-phase-3", { opacity: 1, y: 0, duration: 2 }, 18);
+
+            // ==========================================
+            // TRANSICIÓN FASE 3 -> FASE 4 (20s - 30s)
+            // ==========================================
+            tl.to("#text-phase-3", { opacity: 0, y: -20, duration: 2 }, 21);
+            // Balanceo final
+            tl.to("#bag-group", { rotation: 5, transformOrigin: "50% 10%", duration: 2, ease: "sine.inOut" }, 22);
+            tl.to("#bag-group", { rotation: -5, duration: 3, ease: "sine.inOut" }, 24);
+            tl.to("#bag-group", { rotation: 0, duration: 2, ease: "sine.inOut" }, 27);
             
-            tl.to("#text-phase-1", { opacity: 1, y: -20, duration: 1 })
-              .to("#text-phase-1", { opacity: 0, y: -40, duration: 1 }, "+=1");
-
-            // ==========================================
-            // FASE 2 (25% - 50%): El Bolso "Busca" los objetos
-            // ==========================================
+            // Aparecen Tarjetas de Ingeniería
+            tl.to(".eng-card", { opacity: 1, y: 0, duration: 3, stagger: 0.4 }, 25);
             
-            tl.to("#text-phase-2", { opacity: 1, y: -20, duration: 1 }, "-=0.5");
-
-            // El bolso se expande masivamente para "tragarse" los objetos flotantes
-            tl.to("#bag-group", { scale: 1.1, y: -20, duration: 2, ease: "power2.inOut" }, "-=1");
-
-            tl.to("#text-phase-2", { opacity: 0, y: -40, duration: 1 }, "+=0.5");
-
-            // ==========================================
-            // FASE 3 (50% - 75%): Morphing y Cierre
-            // ==========================================
+            // Aparece el Botón de Compra final (resolución de la presentación)
+            tl.to(".final-cta-container", { autoAlpha: 1, y: 0, duration: 2 }, 28);
             
-            tl.to("#text-phase-3", { opacity: 1, y: -20, duration: 1 }, "-=0.5");
-
-            // Morphing del Bolso y Correas
-            tl.to("#bag-body", { attr: { d: closedBagPath }, duration: 2, ease: "power2.inOut" }, "morph")
-              .to("#strap-left", { attr: { d: closedLeftStrap }, duration: 2, ease: "power2.inOut" }, "morph")
-              .to("#strap-right", { attr: { d: closedRightStrap }, duration: 2, ease: "power2.inOut" }, "morph")
-              .to("#inner-stitching", { opacity: 0, duration: 1 }, "morph");
-
-            // Los objetos quedan atrapados y desaparecen, el bolso se compacta
-            tl.to("#items-group", { opacity: 0, scale: 0.5, transformOrigin: "center center", duration: 1.5 }, "morph")
-              .to("#bag-group", { scale: 0.8, y: 50, duration: 2, ease: "power2.inOut" }, "morph");
-
-            tl.to("#text-phase-3", { opacity: 0, y: -40, duration: 1 }, "+=0.5");
+            // Anclaje al final exacto
+            tl.to({}, {duration: 0.1}, 30);
 
             // ==========================================
-            // FASE 4 (75% - 100%): Final y Tarjetas
+            // Controles de Teclado (Modo Presentación)
             // ==========================================
-            
-            // Balanceo suave del bolso
-            tl.to("#bag-group", { rotation: 5, transformOrigin: "50% 10%", duration: 0.5, ease: "sine.inOut" })
-              .to("#bag-group", { rotation: -5, duration: 1, ease: "sine.inOut" })
-              .to("#bag-group", { rotation: 0, duration: 0.5, ease: "sine.inOut" });
+            window.addEventListener('keydown', (e) => {
+                const slideHeight = window.innerHeight;
+                if (e.key === "ArrowDown" || e.key === " " || e.key === "PageDown") {
+                    e.preventDefault();
+                    window.scrollBy({ top: slideHeight, behavior: 'smooth' });
+                } else if (e.key === "ArrowUp" || e.key === "PageUp") {
+                    e.preventDefault();
+                    window.scrollBy({ top: -slideHeight, behavior: 'smooth' });
+                }
+            });
 
-            // Aparecer Tarjetas de Ingeniería
-            tl.to(".eng-card", { opacity: 1, y: -10, duration: 1, stagger: 0.3 }, "-=1.5");
+            // Ocultar hint de presentación al hacer el primer scroll
+            window.addEventListener('scroll', () => {
+                const hint = document.querySelector('.presentation-hints');
+                if(hint && window.scrollY > 50) {
+                    hint.style.transition = "opacity 0.5s";
+                    hint.style.opacity = "0";
+                }
+            }, { once: true });
 
         });
     </script>
