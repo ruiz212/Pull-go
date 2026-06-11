@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pull&Go Bag - Premium Experience</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #090a0c; /* Más profundo, casi negro puro para resaltar el glow */
+            --text-primary: #f0f0f0;
+            --text-secondary: #a0a0a0;
+            --cta-green: #6b8e23;
+            --cta-green-hover: #8bc34a; /* Más vibrante al hover */
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: radial-gradient(circle at 50% 50%, #15181d 0%, var(--bg-dark) 100%);
+            color: var(--text-primary);
+            line-height: 1.4;
+            overflow-x: hidden;
+        }
+
+        h2 {
+            font-weight: 800;
+            font-size: 2rem;
+            line-height: 1.1;
+            margin-bottom: 0.8rem;
+            letter-spacing: -0.5px;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 60%, var(--cta-green-hover) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        /* Utilities */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            box-shadow: var(--glass-shadow);
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--cta-green) 0%, var(--cta-green-hover) 100%);
+            color: #fff;
+            padding: 16px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.2rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(107, 142, 35, 0.4);
+        }
+
+        .cta-button small {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 400;
+            margin-top: 4px;
+            opacity: 0.8;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(139, 195, 74, 0.6);
+        }
+
+        /* Scrollytelling Layout */
+        #scroll-wrapper {
+            height: 400vh;
+            position: relative;
+        }
+
+        #sticky-container {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* SVG Canvas */
+        #bag-svg {
+            width: 160%; /* Muy grande en móviles */
+            max-width: 900px;
+            height: auto;
+            max-height: 100vh;
+            z-index: 1;
+        }
+
+        /* Animaciones CSS Flotantes para los Objetos (Incluyen la transformación base) */
+        @keyframes float1 {
+            0%, 100% { transform: translate(580px, 200px) rotate(15deg) translateY(0); }
+            50% { transform: translate(580px, 200px) rotate(15deg) translateY(-20px); }
+        }
+        @keyframes float2 {
+            0%, 100% { transform: translate(200px, 250px) rotate(-25deg) translateY(0); }
+            50% { transform: translate(200px, 250px) rotate(-25deg) translateY(-15px); }
+        }
+        @keyframes float3 {
+            0%, 100% { transform: translate(220px, 500px) rotate(-15deg) translateY(0); }
+            50% { transform: translate(220px, 500px) rotate(-15deg) translateY(-25px); }
+        }
+        @keyframes float4 {
+            0%, 100% { transform: translate(600px, 550px) rotate(20deg) translateY(0); }
+            50% { transform: translate(600px, 550px) rotate(20deg) translateY(-18px); }
+        }
+
+        .floating-item { animation: float1 4s ease-in-out infinite; }
+        .floating-item-delay-1 { animation: float2 3.5s ease-in-out infinite 0.5s; }
+        .floating-item-delay-2 { animation: float3 4.5s ease-in-out infinite 1s; }
+        .floating-item-delay-3 { animation: float4 5s ease-in-out infinite 1.5s; }
+
+        /* Floating UI Blocks */
+        .floating-ui {
+            position: absolute;
+            width: 90%;
+            max-width: 380px;
+            padding: 2rem;
+            text-align: center;
+            z-index: 10;
+            opacity: 0;
+            top: 10%;
+            pointer-events: none;
+        }
+
+        /* Engineering Cards Phase 4 */
+        .engineering-cards {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .eng-card {
+            position: absolute;
+            padding: 1.2rem;
+            opacity: 0;
+            border-left: 3px solid var(--cta-green-hover);
+        }
+
+        #card-1 { top: 15%; left: 5%; width: 45%; }
+        #card-2 { top: 45%; right: 5%; width: 45%; border-left: none; border-right: 3px solid var(--cta-green-hover); text-align: right; }
+        #card-3 { bottom: 25%; left: 5%; width: 45%; }
+
+        .eng-card h4 {
+            font-size: 1rem;
+            color: #fff;
+            margin-bottom: 0.3rem;
+        }
+        .eng-card p {
+            font-size: 0.8rem;
+            color: #ccc;
+        }
+
+        /* Fixed CTA Bottom */
+        .fixed-bottom-cta {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem 1rem 2rem;
+            z-index: 100;
+            border-radius: 30px 30px 0 0;
+            border-bottom: none;
+            display: flex;
+            justify-content: center;
+            background: linear-gradient(to top, rgba(15,16,18,0.95) 0%, rgba(15,16,18,0.6) 100%);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .primary-cta {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        /* Desktop Adjustments */
+        @media (min-width: 768px) {
+            #bag-svg {
+                width: 100%;
+            }
+            
+            .floating-ui {
+                top: auto;
+                bottom: 25%;
+            }
+
+            #card-1 { top: 20%; left: 15%; width: 280px; }
+            #card-2 { top: 50%; right: 15%; width: 280px; }
+            #card-3 { bottom: 30%; left: 20%; width: 280px; border-left: 3px solid var(--cta-green-hover); text-align: left; }
+
+            .eng-card h4 { font-size: 1.2rem; }
+            .eng-card p { font-size: 0.95rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="scroll-wrapper">
+        <div id="sticky-container">
+            
+            <svg viewBox="0 0 800 800" preserveAspectRatio="xMidYMid meet" id="bag-svg" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="bagGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#4a4a4a"/>
+                        <stop offset="50%" stop-color="#2a2a2a"/>
+                        <stop offset="100%" stop-color="#111111"/>
+                    </linearGradient>
+                    <linearGradient id="strapGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#8bc34a"/>
+                        <stop offset="100%" stop-color="#558b2f"/>
+                    </linearGradient>
+                    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                        <feGaussianBlur stdDeviation="15" result="blur" />
+                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                    </filter>
+                </defs>
+
+                <!-- Objetos Cotidianos Flotando -->
+                <g id="items-group">
+                    <!-- Laptop -->
+                    <g id="item-laptop" class="floating-item" transform="translate(580, 200) rotate(15)">
+                        <rect x="-50" y="-30" width="100" height="60" rx="4" fill="#cfd8dc" stroke="#90a4ae" stroke-width="3"/>
+                        <rect x="-40" y="-20" width="80" height="40" rx="2" fill="#263238"/>
+                        <path d="M-60,30 L60,30 L55,40 L-55,40 Z" fill="#90a4ae"/>
+                    </g>
+                    <!-- Zapatos -->
+                    <g id="item-shoe" class="floating-item-delay-1" transform="translate(200, 250) rotate(-25)">
+                        <path d="M-40,15 C-40,-15 -10,-25 15,-10 C35,0 55,0 55,15 C55,25 -40,25 -40,15 Z" fill="#ff7043" stroke="#d84315" stroke-width="3"/>
+                        <circle cx="0" cy="0" r="5" fill="#fff"/>
+                        <circle cx="20" cy="5" r="5" fill="#fff"/>
+                    </g>
+                    <!-- Botella -->
+                    <g id="item-bottle" class="floating-item-delay-2" transform="translate(220, 500) rotate(-15)">
+                        <path d="M-15,-30 L15,-30 L15,-15 L25,0 L25,50 L-25,50 L-25,0 L-15,-15 Z" fill="#29b6f6" stroke="#0288d1" stroke-width="3"/>
+                        <rect x="-15" y="-40" width="30" height="10" rx="2" fill="#0288d1"/>
+                        <rect x="-10" y="-20" width="20" height="60" fill="#fff" opacity="0.3"/>
+                    </g>
+                    <!-- Cuaderno -->
+                    <g id="item-notebook" class="floating-item-delay-3" transform="translate(600, 550) rotate(20)">
+                        <rect x="-30" y="-40" width="60" height="80" rx="3" fill="#ffca28" stroke="#ff8f00" stroke-width="3"/>
+                        <rect x="-25" y="-40" width="8" height="80" fill="#ff8f00"/>
+                        <line x1="-10" y1="-20" x2="20" y2="-20" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="-10" y1="-5" x2="20" y2="-5" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="-10" y1="10" x2="20" y2="10" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+                    </g>
+                </g>
+
+                <!-- El Bolso (Capa Superior para Envolver) -->
+                <g id="bag-group">
+                    <!-- Sombra del bolso -->
+                    <ellipse cx="400" cy="680" rx="150" ry="20" fill="rgba(0,0,0,0.5)" filter="url(#glow)" id="bag-shadow"/>
+                    
+                    <!-- Correas -->
+                    <path id="strap-left" d="M 150 400 C 50 250, 150 150, 250 250" fill="none" stroke="url(#strapGrad)" stroke-width="14" stroke-linecap="round"/>
+                    <path id="strap-right" d="M 650 400 C 750 250, 650 150, 550 250" fill="none" stroke="url(#strapGrad)" stroke-width="14" stroke-linecap="round"/>
+
+                    <!-- Base del Bolso -->
+                    <path id="bag-body" d="M 400 100 C 565 100, 700 235, 700 400 C 700 565, 565 700, 400 700 C 235 700, 100 565, 100 400 C 100 235, 235 100, 400 100 Z" fill="url(#bagGrad)" stroke="#1a1a1a" stroke-width="6" filter="url(#glow)"/>
+                    
+                    <!-- Costuras Interiores (Desaparecen al cerrar) -->
+                    <circle id="inner-stitching" cx="400" cy="400" r="260" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2" stroke-dasharray="8,8"/>
+                </g>
+            </svg>
+
+            <!-- Textos e Interfaces Flotantes -->
+            
+            <div class="floating-ui glass-card" id="text-phase-1">
+                <h2 class="gradient-text">De la universidad al trabajo.</h2>
+                <p>En un solo movimiento. <br><strong>Desliza para empacar ↓</strong></p>
+            </div>
+
+            <div class="floating-ui glass-card" id="text-phase-2">
+                <h2 class="gradient-text">102 cm de Acción.</h2>
+                <p>El bolso sale a buscar tus cosas, no al revés. Capacidad masiva envolvente.</p>
+            </div>
+
+            <div class="floating-ui glass-card" id="text-phase-3">
+                <h2 class="gradient-text">Un tirón y listo.</h2>
+                <p>Se cierra automáticamente transformándose en un elegante Tote.</p>
+            </div>
+
+            <div class="engineering-cards">
+                <div class="glass-card eng-card" id="card-1">
+                    <h4>💧 Lona Premium</h4>
+                    <p>Impermeable y resistente a rasgaduras</p>
+                </div>
+                <div class="glass-card eng-card" id="card-2">
+                    <h4>🔗 Cierre Perimetral</h4>
+                    <p>Tensión uniforme que sella el contenido</p>
+                </div>
+                <div class="glass-card eng-card" id="card-3">
+                    <h4>🚀 Minimalismo</h4>
+                    <p>Sin cierres ni hebillas mecánicas</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- CTA Fijo Inferior -->
+    <div class="fixed-bottom-cta glass-card">
+        <a href="https://wa.me/1234567890" target="_blank" class="cta-button primary-cta">
+            Lleva el tuyo con 5% OFF <small>Solo primeros 5 compradores en Managua</small>
+        </a>
+    </div>
+
+    <!-- GSAP & ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            gsap.registerPlugin(ScrollTrigger);
+
+            const closedBagPath = "M 400 250 C 450 250, 520 250, 550 300 C 550 450, 500 650, 400 650 C 300 650, 250 450, 250 300 C 280 250, 350 250, 400 250 Z";
+            
+            const closedLeftStrap = "M 300 300 C 250 100, 350 50, 400 150";
+            const closedRightStrap = "M 500 300 C 550 100, 450 50, 400 150";
+
+            // Set initial state of the bag (small and at the bottom, "waiting")
+            gsap.set("#bag-group", { scale: 0.1, y: 500, transformOrigin: "center center" });
+
+            const tl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: "#scroll-wrapper",
+                    start: "top top",
+                    end: "bottom bottom",
+                    scrub: 1
+                }
+            });
+
+            // ==========================================
+            // FASE 1 (0% - 25%): Intro
+            // ==========================================
+            
+            tl.to("#text-phase-1", { opacity: 1, y: -20, duration: 1 })
+              .to("#text-phase-1", { opacity: 0, y: -40, duration: 1 }, "+=1");
+
+            // ==========================================
+            // FASE 2 (25% - 50%): El Bolso "Busca" los objetos
+            // ==========================================
+            
+            tl.to("#text-phase-2", { opacity: 1, y: -20, duration: 1 }, "-=0.5");
+
+            // El bolso se expande masivamente para "tragarse" los objetos flotantes
+            tl.to("#bag-group", { scale: 1.1, y: -20, duration: 2, ease: "power2.inOut" }, "-=1");
+
+            tl.to("#text-phase-2", { opacity: 0, y: -40, duration: 1 }, "+=0.5");
+
+            // ==========================================
+            // FASE 3 (50% - 75%): Morphing y Cierre
+            // ==========================================
+            
+            tl.to("#text-phase-3", { opacity: 1, y: -20, duration: 1 }, "-=0.5");
+
+            // Morphing del Bolso y Correas
+            tl.to("#bag-body", { attr: { d: closedBagPath }, duration: 2, ease: "power2.inOut" }, "morph")
+              .to("#strap-left", { attr: { d: closedLeftStrap }, duration: 2, ease: "power2.inOut" }, "morph")
+              .to("#strap-right", { attr: { d: closedRightStrap }, duration: 2, ease: "power2.inOut" }, "morph")
+              .to("#inner-stitching", { opacity: 0, duration: 1 }, "morph");
+
+            // Los objetos quedan atrapados y desaparecen, el bolso se compacta
+            tl.to("#items-group", { opacity: 0, scale: 0.5, transformOrigin: "center center", duration: 1.5 }, "morph")
+              .to("#bag-group", { scale: 0.8, y: 50, duration: 2, ease: "power2.inOut" }, "morph");
+
+            tl.to("#text-phase-3", { opacity: 0, y: -40, duration: 1 }, "+=0.5");
+
+            // ==========================================
+            // FASE 4 (75% - 100%): Final y Tarjetas
+            // ==========================================
+            
+            // Balanceo suave del bolso
+            tl.to("#bag-group", { rotation: 5, transformOrigin: "50% 10%", duration: 0.5, ease: "sine.inOut" })
+              .to("#bag-group", { rotation: -5, duration: 1, ease: "sine.inOut" })
+              .to("#bag-group", { rotation: 0, duration: 0.5, ease: "sine.inOut" });
+
+            // Aparecer Tarjetas de Ingeniería
+            tl.to(".eng-card", { opacity: 1, y: -10, duration: 1, stagger: 0.3 }, "-=1.5");
+
+        });
+    </script>
+</body>
+</html>
